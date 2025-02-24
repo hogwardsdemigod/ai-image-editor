@@ -1,0 +1,39 @@
+// Example: Background Remover using Remove.bg API
+async function removeBackground() {
+  const input = document.getElementById('bg-remove-input');
+  const output = document.getElementById('bg-remove-output');
+
+  if (input.files.length === 0) {
+    alert('Please upload an image.');
+    return;
+  }
+
+  const file = input.files[0];
+  const formData = new FormData();
+  formData.append('image_file', file);
+
+  const apiKey = 'YOUR_REMOVE_BG_API_KEY'; // Replace with your API key
+  const url = 'https://api.remove.bg/v1.0/removebg';
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': apiKey,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to remove background.');
+    }
+
+    const blob = await response.blob();
+    const imageUrl = URL.createObjectURL(blob);
+    output.src = imageUrl;
+    output.style.display = 'block';
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred. Please try again.');
+  }
+}
